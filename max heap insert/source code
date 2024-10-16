@@ -1,0 +1,64 @@
+import java.util.Arrays;
+
+public class MaxHeap {
+    private int[] heap;
+    private int size;
+    private int capacity;
+
+    // Constructor to initialize the heap with a given capacity
+    public MaxHeap(int capacity) {
+        this.capacity = capacity;
+        this.size = 0;
+        heap = new int[capacity];
+    }
+
+    // Function to insert a new element into the heap
+    public void insert(int element) {
+        if (size == capacity) {
+            System.out.println("Heap is full, cannot insert!");
+            return;
+        }
+
+        // Insert the new element at the end of the heap
+        heap[size] = element;
+        int current = size;
+        size++;
+
+        // Fix the max heap property if it's violated by comparing with the parent
+        while (current > 0 && heap[current] > heap[parent(current)]) {
+            swap(current, parent(current));
+            current = parent(current);
+        }
+    }
+
+    // Function to get the index of the parent of a node
+    private int parent(int pos) {
+        return (pos - 1) / 2;
+    }
+
+    // Function to swap two elements in the heap
+    private void swap(int i, int j) {
+        int temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
+
+    // Function to print the elements of the heap
+    public void printHeap() {
+        System.out.println(Arrays.toString(Arrays.copyOf(heap, size)));
+    }
+
+    public static void main(String[] args) {
+        MaxHeap maxHeap = new MaxHeap(10);
+
+        // Inserting elements into the max heap
+        maxHeap.insert(20);
+        maxHeap.insert(15);
+        maxHeap.insert(30);
+        maxHeap.insert(10);
+        maxHeap.insert(40);
+
+        // Printing the heap after insertion
+        maxHeap.printHeap();
+    }
+}

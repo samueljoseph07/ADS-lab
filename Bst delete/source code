@@ -1,0 +1,131 @@
+class Node {
+    int data;
+    Node left, right;
+
+    public Node(int item) {
+        data = item;
+        left = right = null;
+    }
+}
+
+class BinarySearchTree {
+    Node root;
+
+    // Constructor
+    BinarySearchTree() { 
+        root = null; 
+    }
+
+    // Method to insert a new key in the BST
+    void insert(int data) {
+        root = insertRec(root, data);
+    }
+
+    // Recursive function to insert a new key in the BST
+    Node insertRec(Node root, int data) {
+        if (root == null) {
+            root = new Node(data);
+            return root;
+        }
+
+        if (data < root.data)
+            root.left = insertRec(root.left, data);
+        else if (data > root.data)
+            root.right = insertRec(root.right, data);
+
+        return root;
+    }
+
+    // Method to delete a key in the BST
+    void delete(int data) {
+        root = deleteRec(root, data);
+    }
+
+    // Recursive function to delete a key in the BST
+    Node deleteRec(Node root, int data) {
+        // Base case: the tree is empty
+        if (root == null)
+            return root;
+
+        // Recur down the tree
+        if (data < root.data)
+            root.left = deleteRec(root.left, data);
+        else if (data > root.data)
+            root.right = deleteRec(root.right, data);
+        else {
+            // Node to be deleted is found
+            // Node with only one child or no child
+            if (root.left == null)
+                return root.right;
+            else if (root.right == null)
+                return root.left;
+
+            // Node with two children: Get the inorder successor (smallest in the right subtree)
+            root.data = minValue(root.right);
+
+            // Delete the inorder successor
+            root.right = deleteRec(root.right, root.data);
+        }
+
+        return root;
+    }
+
+    // Method to find the minimum value node (inorder successor)
+    int minValue(Node root) {
+        int minValue = root.data;
+        while (root.left != null) {
+            root = root.left;
+            minValue = root.data;
+        }
+        return minValue;
+    }
+
+    // A utility function to do inorder traversal of BST
+    void inorder() {
+        inorderRec(root);
+    }
+
+    // Recursive function to perform inorder traversal
+    void inorderRec(Node root) {
+        if (root != null) {
+            inorderRec(root.left);
+            System.out.print(root.data + " ");
+            inorderRec(root.right);
+        }
+    }
+
+    public static void main(String[] args) {
+        BinarySearchTree bst = new BinarySearchTree();
+
+        /* Insert elements */
+        bst.insert(50);
+        bst.insert(30);
+        bst.insert(20);
+        bst.insert(40);
+        bst.insert(70);
+        bst.insert(60);
+        bst.insert(80);
+
+        // Print the inorder traversal of the BST before deletion
+        System.out.println("Inorder traversal before deletion:");
+        bst.inorder();
+
+        // Delete node with value 20
+        System.out.println("\n\nDeleting 20");
+        bst.delete(20);
+        System.out.println("Inorder traversal after deletion:");
+        bst.inorder();
+
+        // Delete node with value 30
+        System.out.println("\n\nDeleting 30");
+        bst.delete(30);
+        System.out.println("Inorder traversal after deletion:");
+        bst.inorder();
+
+        // Delete node with value 50
+        System.out.println("\n\nDeleting 50");
+        bst.delete(50);
+        System.out.println("Inorder traversal after deletion:");
+        bst.inorder();
+    }
+}

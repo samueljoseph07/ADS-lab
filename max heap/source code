@@ -1,0 +1,133 @@
+import java.util.Arrays;
+
+public class MaxHeap {
+    private int[] heap;
+    private int size;
+    private int capacity;
+
+    // Constructor to initialize the max heap
+    public MaxHeap(int capacity) {
+        this.capacity = capacity;
+        this.size = 0;
+        heap = new int[capacity];
+    }
+
+    // Function to get the parent index of a node
+    private int parent(int pos) {
+        return (pos - 1) / 2;
+    }
+
+    // Function to get the left child index of a node
+    private int leftChild(int pos) {
+        return (2 * pos) + 1;
+    }
+
+    // Function to get the right child index of a node
+    private int rightChild(int pos) {
+        return (2 * pos) + 2;
+    }
+
+    // Function to swap two elements in the heap
+    private void swap(int i, int j) {
+        int temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
+
+    // Function to insert a new element into the max heap
+    public void insert(int element) {
+        if (size == capacity) {
+            System.out.println("Heap is full, cannot insert!");
+            return;
+        }
+
+        // Insert the new element at the end of the heap
+        heap[size] = element;
+        int current = size;
+        size++;
+
+        // Fix the max heap property if violated
+        while (current > 0 && heap[current] > heap[parent(current)]) {
+            swap(current, parent(current));
+            current = parent(current);
+        }
+    }
+
+    // Function to delete the maximum element (root) from the heap
+    public void deleteMax() {
+        if (size == 0) {
+            System.out.println("Heap is empty, cannot delete!");
+            return;
+        }
+
+        // Replace the root with the last element
+        heap[0] = heap[size - 1];
+        size--;
+
+        // Heapify the root to maintain max heap property
+        maxHeapify(0);
+    }
+
+    // Function to maintain the max heap property
+    private void maxHeapify(int pos) {
+        int largest = pos;
+        int left = leftChild(pos);
+        int right = rightChild(pos);
+
+        // Find the largest among root, left child, and right child
+        if (left < size && heap[left] > heap[largest]) {
+            largest = left;
+        }
+        if (right < size && heap[right] > heap[largest]) {
+            largest = right;
+        }
+
+        // Swap and continue heapifying if root is not the largest
+        if (largest != pos) {
+            swap(pos, largest);
+            maxHeapify(largest);
+        }
+    }
+
+    // Function to search for an element in the heap
+    public boolean search(int element) {
+        for (int i = 0; i < size; i++) {
+            if (heap[i] == element) {
+                return true; // Element found
+            }
+        }
+        return false; // Element not found
+    }
+
+    // Function to print the elements of the heap
+    public void printHeap() {
+        System.out.println(Arrays.toString(Arrays.copyOf(heap, size)));
+    }
+
+    public static void main(String[] args) {
+        MaxHeap maxHeap = new MaxHeap(10);
+
+        // Insert elements into the max heap
+        maxHeap.insert(50);
+        maxHeap.insert(30);
+        maxHeap.insert(20);
+        maxHeap.insert(15);
+        maxHeap.insert(40);
+
+        // Print the heap after insertions
+        System.out.println("Heap after insertions:");
+        maxHeap.printHeap();
+
+        // Search for an element in the heap
+        int searchElement = 30;
+        System.out.println("Searching for " + searchElement + ": " + (maxHeap.search(searchElement) ? "Found" : "Not Found"));
+
+        searchElement = 100;
+        System.out.println("Searching for " + searchElement + ": " + (maxHeap.search(searchElement) ? "Found" : "Not Found"));
+
+        // Delete the maximum element
+        maxHeap.deleteMax();
+        System.out.println("Heap after deleting the max element:");
+        maxHeap.printHeap();
+    }
+}

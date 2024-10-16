@@ -1,0 +1,147 @@
+// Java program to implement a Min Heap with insert, delete, and search operations
+import java.util.Arrays;
+
+class MinHeap {
+    private int[] heap;
+    private int size;
+    private int capacity;
+
+    // Constructor to initialize the heap with a given capacity
+    public MinHeap(int capacity) {
+        this.capacity = capacity;
+        this.size = 0;
+        this.heap = new int[capacity];
+    }
+
+    // Function to get the index of the parent node
+    private int parent(int i) {
+        return (i - 1) / 2;
+    }
+
+    // Function to get the index of the left child node
+    private int leftChild(int i) {
+        return 2 * i + 1;
+    }
+
+    // Function to get the index of the right child node
+    private int rightChild(int i) {
+        return 2 * i + 2;
+    }
+
+    // Function to swap two elements in the heap array
+    private void swap(int i, int j) {
+        int temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
+
+    // Function to insert a new element into the Min Heap
+    public void insert(int key) {
+        if (size == capacity) {
+            System.out.println("Heap is full, cannot insert more elements.");
+            return;
+        }
+
+        // Insert the new element at the end of the heap
+        heap[size] = key;
+        size++;
+
+        // Heapify the heap by moving the new element upwards
+        int i = size - 1;
+        while (i != 0 && heap[parent(i)] > heap[i]) {
+            swap(i, parent(i));
+            i = parent(i);
+        }
+    }
+
+    // Function to heapify the subtree rooted at index i
+    private void heapify(int i) {
+        int smallest = i;
+        int left = leftChild(i);
+        int right = rightChild(i);
+
+        // If the left child is smaller than the root
+        if (left < size && heap[left] < heap[smallest]) {
+            smallest = left;
+        }
+
+        // If the right child is smaller than the smallest so far
+        if (right < size && heap[right] < heap[smallest]) {
+            smallest = right;
+        }
+
+        // If the smallest is not the root
+        if (smallest != i) {
+            swap(i, smallest);
+            heapify(smallest); // Recursively heapify the affected subtree
+        }
+    }
+
+    // Function to delete the root (minimum element) from the Min Heap
+    public void deleteMin() {
+        if (size <= 0) {
+            System.out.println("Heap is empty, cannot delete.");
+            return;
+        }
+
+        // Replace the root with the last element
+        heap[0] = heap[size - 1];
+        size--;
+
+        // Heapify the root to maintain the Min-Heap property
+        heapify(0);
+    }
+
+    // Function to search for a key in the Min Heap
+    public boolean search(int key) {
+        for (int i = 0; i < size; i++) {
+            if (heap[i] == key) {
+                return true; // Key found
+            }
+        }
+        return false; // Key not found
+    }
+
+    // Function to print the heap array
+    public void printHeap() {
+        System.out.println("Min Heap: " + Arrays.toString(Arrays.copyOf(heap, size)));
+    }
+
+    public static void main(String[] args) {
+        // Create a Min Heap with a capacity of 10
+        MinHeap minHeap = new MinHeap(10);
+
+        // Insert elements into the heap
+        minHeap.insert(10);
+        minHeap.insert(20);
+        minHeap.insert(15);
+        minHeap.insert(30);
+        minHeap.insert(40);
+        minHeap.insert(5);
+
+        // Print the heap after insertion
+        System.out.println("Heap after insertion:");
+        minHeap.printHeap();
+
+        // Search for an element in the heap
+        int elementToSearch = 15;
+        if (minHeap.search(elementToSearch)) {
+            System.out.println("Element " + elementToSearch + " found in the heap.");
+        } else {
+            System.out.println("Element " + elementToSearch + " not found in the heap.");
+        }
+
+        // Delete the minimum element from the heap
+        minHeap.deleteMin();
+        System.out.println("Heap after deleting the minimum element:");
+        minHeap.printHeap();
+
+        // Search for a non-existent element
+        int elementToSearch2 = 100;
+        if (minHeap.search(elementToSearch2)) {
+            System.out.println("Element " + elementToSearch2 + " found in the heap.");
+        } else {
+            System.out.println("Element " + elementToSearch2 + " not found in the heap.");
+        }
+    }
+}

@@ -1,0 +1,114 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+// Dictionary class to handle dictionary operations
+class Dictionary {
+    // HashMap to store key-value pairs where the key is the word and the value is the meaning
+    private Map<String, String> dictionary;
+
+    // Constructor to initialize the dictionary
+    public Dictionary() {
+        dictionary = new HashMap<>();
+    }
+
+    // Method to add a word and its meaning to the dictionary
+    public void addWord(String word, String meaning) {
+        dictionary.put(word, meaning);
+        System.out.println("Word added successfully.");
+    }
+
+    // Method to remove a word from the dictionary
+    public void removeWord(String word) {
+        if (dictionary.containsKey(word)) {
+            dictionary.remove(word);
+            System.out.println("Word removed successfully.");
+        } else {
+            System.out.println("Word not found in the dictionary.");
+        }
+    }
+
+    // Method to search for the meaning of a word in the dictionary
+    public void searchWord(String word) {
+        if (dictionary.containsKey(word)) {
+            System.out.println("Meaning of " + word + ": " + dictionary.get(word));
+        } else {
+            System.out.println("Word not found in the dictionary.");
+        }
+    }
+
+    // Method to get the meaning of a word and return it as a string
+    public String getMeaning(String word) {
+        return dictionary.getOrDefault(word, "Word not found in the dictionary.");
+    }
+
+    // Method to display all words and their meanings in the dictionary
+    public void displayAllWords() {
+        if (dictionary.isEmpty()) {
+            System.out.println("The dictionary is empty.");
+        } else {
+            System.out.println("Words in the dictionary:");
+            for (Map.Entry<String, String> entry : dictionary.entrySet()) {
+                System.out.println(entry.getKey() + " : " + entry.getValue());
+            }
+        }
+    }
+}
+
+// Main class to run the Dictionary application
+public class Main {
+    public static void main(String[] args) {
+        Dictionary dictionary = new Dictionary();
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        // Menu-driven loop to interact with the dictionary
+        do {
+            System.out.println("\nDictionary Menu:");
+            System.out.println("1. Add a Word");
+            System.out.println("2. Remove a Word");
+            System.out.println("3. Search for a Word");
+            System.out.println("4. Display All Words");
+            System.out.println("5. Get Meaning of a Word");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter the word: ");
+                    String word = scanner.nextLine();
+                    System.out.print("Enter the meaning: ");
+                    String meaning = scanner.nextLine();
+                    dictionary.addWord(word, meaning);
+                    break;
+                case 2:
+                    System.out.print("Enter the word to remove: ");
+                    word = scanner.nextLine();
+                    dictionary.removeWord(word);
+                    break;
+                case 3:
+                    System.out.print("Enter the word to search: ");
+                    word = scanner.nextLine();
+                    dictionary.searchWord(word);
+                    break;
+                case 4:
+                    dictionary.displayAllWords();
+                    break;
+                case 5:
+                    System.out.print("Enter the word to get its meaning: ");
+                    word = scanner.nextLine();
+                    String foundMeaning = dictionary.getMeaning(word);
+                    System.out.println("Meaning: " + foundMeaning);
+                    break;
+                case 6:
+                    System.out.println("Exiting the application.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 6);
+        scanner.close();
+    }
+}

@@ -1,0 +1,200 @@
+import java.util.Arrays;
+
+public class MinMaxHeap {
+    private int[] heap;
+    private int size;
+    private int capacity;
+
+    // Constructor to initialize the min-max heap
+    public MinMaxHeap(int capacity) {
+        this.capacity = capacity;
+        this.size = 0;
+        heap = new int[capacity];
+    }
+
+    // Function to get the parent index
+    private int parent(int pos) {
+        return (pos - 1) / 2;
+    }
+
+    // Function to get the left child index
+    private int leftChild(int pos) {
+        return (2 * pos) + 1;
+    }
+
+    // Function to get the right child index
+    private int rightChild(int pos) {
+        return (2 * pos) + 2;
+    }
+
+    // Function to swap two elements in the heap
+    private void swap(int i, int j) {
+        int temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
+
+    // Function to insert an element in the min-max heap
+    public void insert(int element) {
+        if (size == capacity) {
+            System.out.println("Heap is full, cannot insert!");
+            return;
+        }
+
+        // Insert the element at the end of the heap
+        heap[size] = element;
+        int current = size;
+        size++;
+
+        // Fix the heap property by bubbling up
+        bubbleUp(current);
+    }
+
+    // Function to bubble up an element to maintain the heap property
+    private void bubbleUp(int pos) {
+        int parentIdx = parent(pos);
+        if (pos > 0) {
+            if (isMinLevel(pos)) {
+                if (heap[pos] > heap[parentIdx]) {
+                    swap(pos, parentIdx);
+                    bubbleUpMax(parentIdx);
+                } else {
+                    bubbleUpMin(pos);
+                }
+            } else {
+                if (heap[pos] < heap[parentIdx]) {
+                    swap(pos, parentIdx);
+                    bubbleUpMin(parentIdx);
+                } else {
+                    bubbleUpMax(pos);
+                }
+            }
+        }
+    }
+
+    // Bubble up for min level
+    private void bubbleUpMin(int pos) {
+        int grandParent = parent(parent(pos));
+        if (pos > 2 && heap[pos] < heap[grandParent]) {
+            swap(pos, grandParent);
+            bubbleUpMin(grandParent);
+        }
+    }
+
+    // Bubble up for max level
+    private void bubbleUpMax(int pos) {
+        int grandParent = parent(parent(pos));
+        if (pos > 2 && heap[pos] > heap[grandParent]) {
+            swap(pos, grandParent);
+            bubbleUpMax(grandParent);
+        }
+    }
+
+    // Helper function to check if the current level is a min level
+    private boolean isMinLevel(int pos) {
+        return (int) (Math.log(pos + 1) / Math.log(2)) % 2 == 0;
+    }
+
+    // Function to delete the minimum element
+    public void deleteMin() {
+        if (size == 0) {
+            System.out.println("Heap is empty, cannot delete!");
+            return;
+        }
+        heap[0] = heap[size - 1];
+        size--;
+        trickleDownMin(0);
+    }
+
+    // Function to delete the maximum element
+    public void deleteMax() {
+        if (size == 0) {
+            System.out.println("Heap is empty, cannot delete!");
+            return;
+        }
+        int maxIndex = (size == 1) ? 0 : (heap[1] > heap[2] ? 1 : 2);
+        heap[maxIndex] = heap[size - 1];
+        size--;
+        trickleDownMax(maxIndex);
+    }
+
+    // Function to trickle down a node to maintain the min-max heap property at the min level
+    private void trickleDownMin(int pos) {
+        int minIdx = pos;
+        int left = leftChild(pos);
+        int right = rightChild(pos);
+
+        if (left < size && heap[left] < heap[minIdx]) {
+            minIdx = left;
+        }
+        if (right < size && heap[right] < heap[minIdx]) {
+            minIdx = right;
+        }
+        if (minIdx != pos) {
+            swap(pos, minIdx);
+            trickleDownMin(minIdx);
+        }
+    }
+
+    // Function to trickle down a node to maintain the min-max heap property at the max level
+    private void trickleDownMax(int pos) {
+        int maxIdx = pos;
+        int left = leftChild(pos);
+        int right = rightChild(pos);
+
+        if (left < size && heap[left] > heap[maxIdx]) {
+            maxIdx = left;
+        }
+        if (right < size && heap[right] > heap[maxIdx]) {
+            maxIdx = right;
+        }
+        if (maxIdx != pos) {
+            swap(pos, maxIdx);
+            trickleDownMax(maxIdx);
+        }
+    }
+
+    // Function to search for an element in the heap
+    public boolean search(int element) {
+        for (int i = 0; i < size; i++) {
+            if (heap[i] == element) {
+                return true; // Element found
+            }
+        }
+        return false; // Element not found
+    }
+
+    // Function to print the heap
+    public void printHeap() {
+        System.out.println(Arrays.toString(Arrays.copyOf(heap, size)));
+    }
+
+    public static void main(String[] args) {
+        MinMaxHeap minMaxHeap = new MinMaxHeap(10);
+
+        // Insert elements
+        minMaxHeap.insert(30);
+        minMaxHeap.insert(20);
+        minMaxHeap.insert(10);
+        minMaxHeap.insert(60);
+        minMaxHeap.insert(40);
+
+        // Print the heap after insertions
+        System.out.println("Heap after insertions:");
+        minMaxHeap.printHeap();
+
+        // Search for elements
+        System.out.println("Searching for 40: " + (minMaxHeap.search(40) ? "Found" : "Not Found"));
+        System.out.println("Searching for 100: " + (minMaxHeap.search(100) ? "Found" : "Not Found"));
+
+        // Delete the minimum element
+        minMaxHeap.deleteMin();
+        System.out.println("Heap after deleting the min element:");
+        minMaxHeap.printHeap();
+
+        // Delete the maximum element
+        minMaxHeap.deleteMax();
+        System.out.println("Heap after deleting the max element:");
+        minMaxHeap.printHeap();
+    }
+}

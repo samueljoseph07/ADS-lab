@@ -1,0 +1,89 @@
+class Node {
+    int data;
+    Node left, right;
+
+    public Node(int item) {
+        data = item;
+        left = right = null;
+    }
+}
+
+class BinarySearchTree {
+    Node root;
+
+    // Constructor
+    BinarySearchTree() { 
+        root = null; 
+    }
+
+    // Method to insert a new key in the BST
+    void insert(int data) {
+        root = insertRec(root, data);
+    }
+
+    // Recursive function to insert a new key in the BST
+    Node insertRec(Node root, int data) {
+        if (root == null) {
+            root = new Node(data);
+            return root;
+        }
+
+        if (data < root.data)
+            root.left = insertRec(root.left, data);
+        else if (data > root.data)
+            root.right = insertRec(root.right, data);
+
+        return root;
+    }
+
+    // Method to search for a node in the BST
+    boolean search(int data) {
+        return searchRec(root, data);
+    }
+
+    // Recursive function to search for a node in the BST
+    boolean searchRec(Node root, int data) {
+        // Base case: root is null or key is present at root
+        if (root == null) {
+            return false;
+        }
+        if (root.data == data) {
+            return true;
+        }
+
+        // If the key is smaller than the root's key, search in the left subtree
+        if (data < root.data) {
+            return searchRec(root.left, data);
+        }
+
+        // If the key is greater than the root's key, search in the right subtree
+        return searchRec(root.right, data);
+    }
+
+    public static void main(String[] args) {
+        BinarySearchTree bst = new BinarySearchTree();
+
+        /* Insert elements */
+        bst.insert(50);
+        bst.insert(30);
+        bst.insert(20);
+        bst.insert(40);
+        bst.insert(70);
+        bst.insert(60);
+        bst.insert(80);
+
+        // Search for a node with value 40
+        if (bst.search(40)) {
+            System.out.println("Node 40 found in the tree.");
+        } else {
+            System.out.println("Node 40 not found in the tree.");
+        }
+
+        // Search for a node with value 90
+        if (bst.search(90)) {
+            System.out.println("Node 90 found in the tree.");
+        } else {
+            System.out.println("Node 90 not found in the tree.");
+        }
+    }
+}
